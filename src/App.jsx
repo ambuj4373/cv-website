@@ -212,15 +212,15 @@ function Hero() {
     const name = "AMBUJ SHUKLA";
     const scrambledName = useScramble(name, 2000, 500);
     const subtitles = [
-    "Professionally AML Analyst For Daily Bread",
+    "AML Analyst at GoCardless",
     "Huge Interest In Data Science",
     "Keen Interest In International Relations And Global Affairs",
     "FC Barcelona Fan",
-    "Daily Workout With Regulatory Compliance Professionally",
+    "Daily Workout With Regulatory Compliance at GoCardless",
     "Playing With Python, R & AI Projects In Free Time 😉",
     "Building Websites And Experimenting With The Help Of AI 😉",
     "Roamer And Adventurer",
-    "Never Studied CS",
+    "Not a CS Graduate",
     "Also Interested In Machine Learning All Thanks To GPT 😉",
     "Sometimes I Write And Blog",
     "Like To Go For Camping And Hiking",
