@@ -20,10 +20,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 // --- DATA ---
 const workExperiences = [
-  { id: 1, title: "Anti-Money Laundering Analyst", company: "GoCardless", location: "Riga, Latvia", dates: "2024 - Present", description: "Leading AML investigations and regulatory compliance initiatives.", responsibilities: ["Conduct enhanced due diligence on high-risk customers", "Utilize LexisNexis and SAS for comprehensive risk assessments", "Monitor transactions for suspicious activity and PEP screening"], color: "#00D4FF" },
-  { id: 2, title: "KYC and Support Specialist", company: "GoCardless", location: "Riga, Latvia", dates: "2023 - 2024", description: "Specialized in customer onboarding and compliance verification.", responsibilities: ["Performed comprehensive customer due diligence", "Managed KYC-related customer queries and complaints", "Collaborated with cross-functional teams for compliance"], color: "#00D4FF" },
-  { id: 3, title: "Equities Operations Specialist", company: "SEB", location: "Riga, Latvia", dates: "2022 - 2022", description: "Managed equity operations across Nordic markets.", responsibilities: ["Resolved daily trade issues with precision", "Collaborated with global partners for smooth operations", "Managed reconciliation and data confidentiality"], color: "#0066CC" },
-  { id: 4, title: "Data Associate", company: "Jindal Intellicom", location: "Gurugram, India", dates: "2020 - 2021", description: "Zomato platform specialist for restaurant onboarding.", responsibilities: ["Onboarded B2B restaurants onto Zomato platform", "Verified restaurant amenities and service features", "Performed data validation using MS tools"], color: "#E23744" }
+  { id: 1, title: "Anti-Money Laundering Analyst", company: "GoCardless", location: "Riga, Latvia", dates: "2024 - Present", description: "AML compliance with internal policies and external requirements.", responsibilities: ["Conduct enhanced due diligence", "Conduct comprehensive risk assessments", "PEP, Adverse Media and Enforcement Screening"], color: "#00D4FF" },
+  { id: 2, title: "KYC and Support Specialist", company: "GoCardless", location: "Riga, Latvia", dates: "2023 - 2024", description: "Focus on Customer onboarding and compliance verification.", responsibilities: ["Comprehensive customer due diligence", " Manage KYC processes and resolve system-related customer inquiries", "Collaborated with cross-functional teams"], color: "#00D4FF" },
+  { id: 3, title: "Equities Operations Specialist", company: "SEB", location: "Riga, Latvia", dates: "2022 - 2022", description: "Managed equity operations across Nordic markets.", responsibilities: ["Matching and Settlement of Daily booked trades", "Collaborated with market partners for smooth operations", "Managed reconciliation and daily settlements"], color: "#0066CC" },
+  { id: 4, title: "Data Associate", company: "Eternal Limited (Zomato)", location: "Gurugram, India", dates: "2020 - 2021", description: "Zomato platform specialist for restaurant onboarding.", responsibilities: ["Onboarded B2B restaurants onto Zomato platform", "Verified restaurant and their presence", "Reviewing their license and KYB checks"], color: "#E23744" }
 ];
 const projects = [
   { id: 1, title: "CNN Model in R", description: "Advanced convolutional neural network for image classification using TensorFlow and Keras in R.", image: "https://placehold.co/600x400/0a0a0a/ffffff?text=CNN+Model", link: "https://github.com/ambuj4373/Creating-CNN-MODEL-IN-R", tech: ["R", "TensorFlow", "Keras", "Data Science"], featured: true },
@@ -31,10 +31,10 @@ const projects = [
 ];
 const skillsData = {
   professional: [
-    { title: "AML & Compliance", content: "Leading anti-money laundering investigations and regulatory compliance at GoCardless, including enhanced due diligence, PEP screening, and monitoring high-risk customers." },
+    { title: "AML & Compliance", content: "Leading anti-money laundering investigations and regulatory compliance at GoCardless, including enhanced due diligence, PEP, Adverse media and Enforcement Screenings, and monitoring high-risk customers." },
     { title: "KYC & Customer Onboarding", content: "Managing customer onboarding, resolving KYC queries, and ensuring compliance across teams." },
     { title: "Banking Operations", content: "Experience at SEB handling equity operations, trade reconciliation, and resolving issues across Nordic markets." },
-    { title: "Tools I Use", content: "LexisNexis, SAS, SQL, and other compliance/finance platforms." }
+    { title: "Tools I Use", content: "LexisNexis, World-Check, Dow Jones Risk & Compliance, ComplyAdvantage, Ondato / Sumsub, company's internal tools and softwares." }
   ],
   technical: [
     { title: "Data Science & Analytics", content: "Working with R, Python, and AI tools for data analysis, visualization, and predictive modeling." },
@@ -42,9 +42,9 @@ const skillsData = {
     { title: "Machine Learning Projects", content: "Created models like CNNs for image classification as part of learning and portfolio work." }
   ],
   personal: [
-    { title: "Writing & Learning", content: "Writing articles and reading about data science, geopolitics, philosophy, and tech trends." },
-    { title: "Sports", content: "Passionate about football, especially FC Barcelona, and enjoy following matches and tactics." },
-    { title: "Outdoors & Travel", content: "Love travelling, camping, and exploring new places, combining adventure with learning." },
+    { title: "Writing & Learning", content: "Reading new articles and learning about data science, geopolitics, philosophy, and upcoming tech trends." },
+    { title: "Sports", content: "Passionate about football, fan of FC Barcelona, and enjoy following matches and tactics." },
+    { title: "Outdoors & Travel", content: "Love travelling, camping, and exploring new places." },
     { title: "Entertainment & Curiosity", content: "Enjoy movies, music, and exploring anything new or exciting." }
   ]
 };
@@ -212,22 +212,22 @@ function Hero() {
     const name = "AMBUJ SHUKLA";
     const scrambledName = useScramble(name, 2000, 500);
     const subtitles = [
-        "Curious about anti-money laundering", 
-        "Exploring data science with AI 😉", 
-        "Following geopolitics", 
-        "FC Barcelona fan", 
-        "Learning about regulatory compliance", 
-        "Playing with Python, R & AI projects 😉", 
-        "Building websites and experimenting with AI 😉", 
+        "Professinally AML Analyst for daily bread", 
+        "Huge interest in data science", 
+        "Keen interest in international relations and global affairs", 
+        "FC Barcelona Fan", 
+        "Daily workout with regulatory compliance professionally", 
+        "Playing with Python, R & AI projects in free time 😉", 
+        "Building websites and experimenting with the help of AI 😉", 
         "Roamer and adventurer", 
-        "Interested in KYC processes", 
-        "Trying out machine learning with AI 😉", 
-        "Writing & blogging thoughts", 
-        "Enjoy camping and hiking", 
-        "Exploring finance in my own way", 
-        "Philosophical thinker", 
-        "Movie lover", 
-        "Tech curious and experimenting with AI 😉"
+        "Never studied CS", 
+        "Also interested in machine learning all thanks to GPT 😉", 
+        "Sometimes I write and blog", 
+        "Like to go for camping and hiking", 
+        "I like to read about eastern philosphies sometime", 
+        "Sometimes watching movies and web series", 
+        "Gaming occasionally on Xbox 😉",
+        "C'mon Scroll Now 😀"
     ];
     const [subtitleIndex, setSubtitleIndex] = useState(0);
 
