@@ -456,23 +456,47 @@ function Articles() {
   return (
     <section id="articles" className="min-h-screen py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+        <motion.h2
+          className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent pb-2" // Added pb-2 for padding-bottom
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           Thoughts & Publications
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article, index) => (
-            <motion.a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer" className="group relative block aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.1 }} whileHover={{ scale: 1.05, y: -5 }} data-cursor="interactive">
+            <motion.a
+              key={article.id}
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative block aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+              whileHover={{ scale: 1.05, y: -5 }}
+              data-cursor="interactive"
+            >
               <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-lg"></div>
-              <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110" />
+              <img
+                src={article.image}
+                alt={article.title}
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+              />
               <div className="absolute inset-0 bg-black bg-opacity-60 group-hover:bg-opacity-75 transition-all duration-500" />
               <div className="relative p-4 flex flex-col h-full text-white">
-                <h3 className="text-md font-bold mb-2 group-hover:text-orange-400 transition-colors">{article.title}</h3>
+                <h3 className="text-md font-bold mb-2 group-hover:text-orange-400 transition-colors">
+                  {article.title}
+                </h3>
                 <div className="flex items-center justify-between text-xs text-gray-400">
                   <span>{article.platform}</span>
                   <span>{article.readTime}</span>
                 </div>
                 <div className="mt-auto text-right opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <span className="font-semibold text-orange-400 text-sm">Read →</span>
+                  <span className="font-semibold text-orange-400 text-sm">
+                    Read →
+                  </span>
                 </div>
               </div>
             </motion.a>
