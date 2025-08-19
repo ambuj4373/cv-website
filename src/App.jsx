@@ -212,22 +212,22 @@ function Hero() {
     const name = "AMBUJ SHUKLA";
     const scrambledName = useScramble(name, 2000, 500);
     const subtitles = [
-        "Professinally AML Analyst for daily bread", 
-        "Huge interest in data science", 
-        "Keen interest in international relations and global affairs", 
-        "FC Barcelona Fan", 
-        "Daily workout with regulatory compliance professionally", 
-        "Playing with Python, R & AI projects in free time 😉", 
-        "Building websites and experimenting with the help of AI 😉", 
-        "Roamer and adventurer", 
-        "Never studied CS", 
-        "Also interested in machine learning all thanks to GPT 😉", 
-        "Sometimes I write and blog", 
-        "Like to go for camping and hiking", 
-        "I like to read about eastern philosphies sometime", 
-        "Sometimes watching movies and web series", 
-        "Gaming occasionally on Xbox 😉",
-        "C'mon Scroll Now 😀"
+    "Professionally AML analyst for daily bread",
+    "Huge interest in data science",
+    "Keen interest in international relations and global affairs",
+    "FC Barcelona fan",
+    "Daily workout with regulatory compliance professionally",
+    "Playing with Python, R & AI projects in free time 😉",
+    "Building websites and experimenting with the help of AI 😉",
+    "Roamer and adventurer",
+    "Never studied CS",
+    "Also interested in machine learning all thanks to GPT 😉",
+    "Sometimes I write and blog",
+    "Like to go for camping and hiking",
+    "I like to read about eastern philosophies sometimes",
+    "Sometimes watching movies and web series",
+    "Gaming occasionally on Xbox 😉",
+    "C'mon scroll now 😀"
     ];
     const [subtitleIndex, setSubtitleIndex] = useState(0);
 
