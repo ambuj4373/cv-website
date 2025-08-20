@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+// useSpring is no longer needed, so it's removed
+import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, Line } from '@react-three/drei';
 import gsap from 'https://cdn.skypack.dev/gsap';
 import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap/ScrollTrigger.js';
 import * as THREE from 'three';
+import './index.css'; 
 
 // --- ICONS ---
 const CodeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>;
@@ -20,78 +22,78 @@ gsap.registerPlugin(ScrollTrigger);
 
 // --- DATA ---
 const workExperiences = [
-  { id: 1, title: "Anti-Money Laundering Analyst", company: "GoCardless", location: "Riga, Latvia", dates: "2024 - Present", description: "AML compliance with internal policies and external requirements.", responsibilities: ["Conduct enhanced due diligence", "Conduct comprehensive risk assessments", "PEP, Adverse Media and Enforcement Screening"], color: "#00D4FF" },
-  { id: 2, title: "KYC and Support Specialist", company: "GoCardless", location: "Riga, Latvia", dates: "2023 - 2024", description: "Focus on Customer onboarding and compliance verification.", responsibilities: ["Comprehensive customer due diligence", " Manage KYC processes and resolve system-related customer inquiries", "Collaborated with cross-functional teams"], color: "#00D4FF" },
-  { id: 3, title: "Equities Operations Specialist", company: "SEB", location: "Riga, Latvia", dates: "2022 - 2022", description: "Managed equity operations across Nordic markets.", responsibilities: ["Matching and Settlement of Daily booked trades", "Collaborated with market partners for smooth operations", "Managed reconciliation and daily settlements"], color: "#0066CC" },
-  { id: 4, title: "Data Associate", company: "Eternal Limited (Zomato)", location: "Gurugram, India", dates: "2020 - 2021", description: "Zomato platform specialist for restaurant onboarding.", responsibilities: ["Onboarded B2B restaurants onto Zomato platform", "Verified restaurant and their presence", "Reviewing their license and KYB checks"], color: "#E23744" }
+    { id: 1, title: "Anti-Money Laundering Analyst", company: "GoCardless", location: "Riga, Latvia", dates: "2024 - Present", description: "AML compliance with internal policies and external requirements.", responsibilities: ["Conduct enhanced due diligence", "Conduct comprehensive risk assessments", "PEP, Adverse Media and Enforcement Screening"], color: "#00D4FF" },
+    { id: 2, title: "KYC and Support Specialist", company: "GoCardless", location: "Riga, Latvia", dates: "2023 - 2024", description: "Focus on Customer onboarding and compliance verification.", responsibilities: ["Comprehensive customer due diligence", " Manage KYC processes and resolve system-related customer inquiries", "Collaborated with cross-functional teams"], color: "#00D4FF" },
+    { id: 3, title: "Equities Operations Specialist", company: "SEB", location: "Riga, Latvia", dates: "2022 - 2022", description: "Managed equity operations across Nordic markets.", responsibilities: ["Matching and Settlement of Daily booked trades", "Collaborated with market partners for smooth operations", "Managed reconciliation and daily settlements"], color: "#0066CC" },
+    { id: 4, title: "Data Associate", company: "Eternal Limited (Zomato)", location: "Gurugram, India", dates: "2020 - 2021", description: "Zomato platform specialist for restaurant onboarding.", responsibilities: ["Onboarded B2B restaurants onto Zomato platform", "Verified restaurant and their presence", "Reviewing their license and KYB checks"], color: "#E23744" }
 ];
 const projects = [
-  { id: 1, title: "CNN Model in R", description: "Advanced convolutional neural network for image classification using TensorFlow and Keras in R.", image: "https://placehold.co/600x400/0a0a0a/ffffff?text=CNN+Model", link: "https://github.com/ambuj4373/Creating-CNN-MODEL-IN-R", tech: ["R", "TensorFlow", "Keras", "Data Science"], featured: true },
-  { id: 2, title: "Portfolio Website", description: "This cutting-edge portfolio featuring Three.js, GSAP, and modern web technologies.", image: "https://placehold.co/600x400/1a1a1a/ffffff?text=Portfolio", link: "https://github.com/ambuj4373/cv-website", tech: ["React", "Three.js", "GSAP", "Tailwind"], featured: true }
+    { id: 1, title: "CNN Model in R", description: "Advanced convolutional neural network for image classification using TensorFlow and Keras in R.", image: "https://placehold.co/600x400/0a0a0a/ffffff?text=CNN+Model", link: "https://github.com/ambuj4373/Creating-CNN-MODEL-IN-R", tech: ["R", "TensorFlow", "Keras", "Data Science"], featured: true },
+    { id: 2, title: "Portfolio Website", description: "This cutting-edge portfolio featuring Three.js, GSAP, and modern web technologies.", image: "https://placehold.co/600x400/1a1a1a/ffffff?text=Portfolio", link: "https://github.com/ambuj4373/cv-website", tech: ["React", "Three.js", "GSAP", "Tailwind"], featured: true }
 ];
 const skillsData = {
-  professional: [
-    { title: "AML & Compliance", content: "Leading anti-money laundering investigations and regulatory compliance at GoCardless, including enhanced due diligence, PEP, Adverse media and Enforcement Screenings, and monitoring high-risk customers." },
-    { title: "KYC & Customer Onboarding", content: "Managing customer onboarding, resolving KYC queries, and ensuring compliance across teams." },
-    { title: "Banking Operations", content: "Experience at SEB handling equity operations, trade reconciliation, and resolving issues across Nordic markets." },
-    { title: "Tools I Use", content: "LexisNexis, World-Check, Dow Jones Risk & Compliance, ComplyAdvantage, Ondato / Sumsub, company's internal tools and softwares." }
-  ],
-  technical: [
-    { title: "Data Science & Analytics", content: "Working with R, Python, and AI tools for data analysis, visualization, and predictive modeling." },
-    { title: "Web & Portfolio Development", content: "Built interactive projects and websites using React, Three.js, Tailwind, and GSAP, sometimes experimenting with AI assistance." },
-    { title: "Machine Learning Projects", content: "Created models like CNNs for image classification as part of learning and portfolio work." }
-  ],
-  personal: [
-    { title: "Writing & Learning", content: "Reading new articles and learning about data science, geopolitics, philosophy, and upcoming tech trends." },
-    { title: "Sports", content: "Passionate about football, fan of FC Barcelona, and enjoy following matches and tactics." },
-    { title: "Outdoors & Travel", content: "Love travelling, camping, and exploring new places." },
-    { title: "Entertainment & Curiosity", content: "Enjoy movies, music, and exploring anything new or exciting." }
-  ]
+    professional: [
+        { title: "AML & Compliance", content: "Leading anti-money laundering investigations and regulatory compliance at GoCardless, including enhanced due diligence, PEP, Adverse media and Enforcement Screenings, and monitoring high-risk customers." },
+        { title: "KYC & Customer Onboarding", content: "Managing customer onboarding, resolving KYC queries, and ensuring compliance across teams." },
+        { title: "Banking Operations", content: "Experience at SEB handling equity operations, trade reconciliation, and resolving issues across Nordic markets." },
+        { title: "Tools I Use", content: "LexisNexis, World-Check, Dow Jones Risk & Compliance, ComplyAdvantage, Ondato / Sumsub, company's internal tools and softwares." }
+    ],
+    technical: [
+        { title: "Data Science & Analytics", content: "Working with R, Python, and AI tools for data analysis, visualization, and predictive modeling." },
+        { title: "Web & Portfolio Development", content: "Built interactive projects and websites using React, Three.js, Tailwind, and GSAP, sometimes experimenting with AI assistance." },
+        { title: "Machine Learning Projects", content: "Created models like CNNs for image classification as part of learning and portfolio work." }
+    ],
+    personal: [
+        { title: "Writing & Learning", content: "Reading new articles and learning about data science, geopolitics, philosophy, and upcoming tech trends." },
+        { title: "Sports", content: "Passionate about football, fan of FC Barcelona, and enjoy following matches and tactics." },
+        { title: "Outdoors & Travel", content: "Love travelling, camping, and exploring new places." },
+        { title: "Entertainment & Curiosity", content: "Enjoy movies, music, and exploring anything new or exciting." }
+    ]
 };
 const education = [
-  { id: 1, title: "International Business with Specialisation in International Relations", institution: "University of Latvia", dates: "2024 - Present", type: "Master's Degree", description: "Advanced studies in international business strategy and global relations.", link: "https://www.lu.lv/en/", status: "current" },
-  { id: 2, title: "Google Data Analytics Specialization", institution: "Coursera", dates: "2022", type: "Professional Certificate", description: "Comprehensive data analytics covering SQL, R, and visualization.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/AAQR7QCNHPTV", status: "completed" },
-  { id: 3, title: "IBM Applied Data Science with R", institution: "Coursera", dates: "2023", type: "Professional Certificate", description: "Applied data science using R for statistical analysis and ML.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/ASVE32JK5C66", status: "completed" }
+    { id: 1, title: "International Business with Specialisation in International Relations", institution: "University of Latvia", dates: "2024 - Present", type: "Master's Degree", description: "Advanced studies in international business strategy and global relations.", link: "https://www.lu.lv/en/", status: "current" },
+    { id: 2, title: "Google Data Analytics Specialization", institution: "Coursera", dates: "2022", type: "Professional Certificate", description: "Comprehensive data analytics covering SQL, R, and visualization.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/AAQR7QCNHPTV", status: "completed" },
+    { id: 3, title: "IBM Applied Data Science with R", institution: "Coursera", dates: "2023", type: "Professional Certificate", description: "Applied data science using R for statistical analysis and ML.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/ASVE32JK5C66", status: "completed" }
 ];
 const articles = [
-  { id: 1, title: "Discovering Hidden Gems: Great R Libraries You Might Have Missed", url: "https://medium.com/r-evolution/discovering-hidden-gems-great-r-libraries-you-might-have-missed-9bae691ff552", platform: "Medium", readTime: "8 min read", image: "https://placehold.co/600x400/000000/FFFFFF?text=Article+1" },
-  { id: 2, title: "ggplot2 3.3.0 - Hands-on New Features", url: "https://medium.com/p/69b0336f16eb", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/111111/FFFFFF?text=Article+2" },
-  { id: 3, title: "Visualizing Hierarchical Data with Sunburst Charts in R", url: "https://medium.com/p/22b101f0ebfc", platform: "Medium", readTime: "7 min read", image: "https://placehold.co/600x400/222222/FFFFFF?text=Article+3" },
-  { id: 4, title: "From Brinkmanship to a Fragile Truce", url: "https://ambuj4373.medium.com/from-brinkmanship-to-a-fragile-truce-how-the-may-2025-ceasefire-is-reshaping-indias-policy-d2e39639fab0", platform: "Medium", readTime: "5 min read", image: "https://placehold.co/600x400/333333/FFFFFF?text=Article+4" },
-  { id: 5, title: "Unlocking the Power of the GT Package in R", url: "https://medium.com/r-evolution/unlocking-the-power-of-the-gt-package-in-r-an-underrated-gem-for-beautiful-tables-5b798355cf38", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/444444/FFFFFF?text=Article+5" },
-  { id: 6, title: "Tools and Techniques Features in R", url: "https://medium.com/r-evolution/tools-and-techniques-features-in-r-3614edc0e419", platform: "Medium", readTime: "4 min read", image: "https://placehold.co/600x400/555555/FFFFFF?text=Article+6" },
-  { id: 7, title: "R Packages in 2024: Fresh Tools", url: "https://medium.com/r-evolution/r-packages-in-2024-fresh-tools-f25939267eda", platform: "Medium", readTime: "5 min read", image: "https://placehold.co/600x400/666666/FFFFFF?text=Article+7" },
-  { id: 8, title: "The Hidden Players Shaping Global Geopolitics", url: "https://ambuj4373.medium.com/the-hidden-players-shaping-the-future-of-global-geopolitics-and-economy-ad022f35352c", platform: "Medium", readTime: "7 min read", image: "https://placehold.co/600x400/777777/FFFFFF?text=Article+8" },
-  { id: 9, title: "Analyzing Sales Performance with R", url: "https://medium.com/r-evolution/analyzing-sales-performance-with-r-b1270c62b182", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/888888/FFFFFF?text=Article+9" }
+    { id: 1, title: "Discovering Hidden Gems: Great R Libraries You Might Have Missed", url: "https://medium.com/r-evolution/discovering-hidden-gems-great-r-libraries-you-might-have-missed-9bae691ff552", platform: "Medium", readTime: "8 min read", image: "https://placehold.co/600x400/000000/FFFFFF?text=Article+1" },
+    { id: 2, title: "ggplot2 3.3.0 - Hands-on New Features", url: "https://medium.com/p/69b0336f16eb", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/111111/FFFFFF?text=Article+2" },
+    { id: 3, title: "Visualizing Hierarchical Data with Sunburst Charts in R", url: "https://medium.com/p/22b101f0ebfc", platform: "Medium", readTime: "7 min read", image: "https://placehold.co/600x400/222222/FFFFFF?text=Article+3" },
+    { id: 4, title: "From Brinkmanship to a Fragile Truce", url: "https://ambuj4373.medium.com/from-brinkmanship-to-a-fragile-truce-how-the-may-2025-ceasefire-is-reshaping-indias-policy-d2e39639fab0", platform: "Medium", readTime: "5 min read", image: "https://placehold.co/600x400/333333/FFFFFF?text=Article+4" },
+    { id: 5, title: "Unlocking the Power of the GT Package in R", url: "https://medium.com/r-evolution/unlocking-the-power-of-the-gt-package-in-r-an-underrated-gem-for-beautiful-tables-5b798355cf38", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/444444/FFFFFF?text=Article+5" },
+    { id: 6, title: "Tools and Techniques Features in R", url: "https://medium.com/r-evolution/tools-and-techniques-features-in-r-3614edc0e419", platform: "Medium", readTime: "4 min read", image: "https://placehold.co/600x400/555555/FFFFFF?text=Article+6" },
+    { id: 7, title: "R Packages in 2024: Fresh Tools", url: "https://medium.com/r-evolution/r-packages-in-2024-fresh-tools-f25939267eda", platform: "Medium", readTime: "5 min read", image: "https://placehold.co/600x400/666666/FFFFFF?text=Article+7" },
+    { id: 8, title: "The Hidden Players Shaping Global Geopolitics", url: "https://ambuj4373.medium.com/the-hidden-players-shaping-the-future-of-global-geopolitics-and-economy-ad022f35352c", platform: "Medium", readTime: "7 min read", image: "https://placehold.co/600x400/777777/FFFFFF?text=Article+8" },
+    { id: 9, title: "Analyzing Sales Performance with R", url: "https://medium.com/r-evolution/analyzing-sales-performance-with-r-b1270c62b182", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/888888/FFFFFF?text=Article+9" }
 ];
 
 // --- 3D PARTICLE BACKGROUND ---
 function ParticleField() {
-  const ref = useRef();
-  const [sphere] = useState(() => {
-    const sphereGeometry = new THREE.SphereGeometry(1, 45, 45);
-    const positions = sphereGeometry.attributes.position.array;
-    const particles = [];
-    for (let i = 0; i < positions.length; i += 3) {
-      particles.push(positions[i] * 5, positions[i + 1] * 5, positions[i + 2] * 5);
-    }
-    return new Float32Array(particles);
-  });
+    const ref = useRef();
+    const [sphere] = useState(() => {
+        const sphereGeometry = new THREE.SphereGeometry(1, 45, 45);
+        const positions = sphereGeometry.attributes.position.array;
+        const particles = [];
+        for (let i = 0; i < positions.length; i += 3) {
+            particles.push(positions[i] * 5, positions[i + 1] * 5, positions[i + 2] * 5);
+        }
+        return new Float32Array(particles);
+    });
 
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.x = state.clock.elapsedTime * 0.1;
-      ref.current.rotation.y = state.clock.elapsedTime * 0.15;
-      ref.current.position.x = state.mouse.x * 0.2;
-      ref.current.position.y = state.mouse.y * 0.2;
-    }
-  });
+    useFrame((state) => {
+        if (ref.current) {
+            ref.current.rotation.x = state.clock.elapsedTime * 0.1;
+            ref.current.rotation.y = state.clock.elapsedTime * 0.15;
+            ref.current.position.x = state.mouse.x * 0.2;
+            ref.current.position.y = state.mouse.y * 0.2;
+        }
+    });
 
-  return (
-    <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color="#00ffff" size={0.005} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
-    </Points>
-  );
+    return (
+        <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
+            <PointMaterial transparent color="#00ffff" size={0.005} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
+        </Points>
+    );
 }
 
 // --- MATRIX RAIN BACKGROUND ---
@@ -138,96 +140,110 @@ function MatrixRain({ count = 100 }) {
 }
 
 
-// --- MINIMAL CURSOR ---
+// --- MINIMAL CURSOR (PRECISE & OPTIMIZED) ---
 function MinimalCursor() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
+    const [isHovering, setIsHovering] = useState(false);
 
-  useEffect(() => {
-    const updateMousePosition = (e) => setPosition({ x: e.clientX, y: e.clientY });
-    const handleMouseEnter = () => setIsHovering(true);
-    const handleMouseLeave = () => setIsHovering(false);
+    // 1. Use motion values for performant 1:1 tracking
+    const cursorX = useMotionValue(-100);
+    const cursorY = useMotionValue(-100);
 
-    window.addEventListener('mousemove', updateMousePosition);
-    const interactiveElements = document.querySelectorAll('button, a, [data-cursor="interactive"]');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
+    useEffect(() => {
+        const moveCursor = (e) => {
+            // Set the cursor position directly without any spring smoothing
+            cursorX.set(e.clientX - 6); // -6 to center the 12px cursor
+            cursorY.set(e.clientY - 6);
+        };
 
-    return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
-      });
-    };
-  }, []);
+        const handleMouseEnter = () => setIsHovering(true);
+        const handleMouseLeave = () => setIsHovering(false);
 
-  return (
-    <motion.div
-      className="fixed top-0 left-0 w-3 h-3 rounded-full pointer-events-none z-[9999] bg-cyan-400 mix-blend-difference"
-      animate={{ x: position.x - 6, y: position.y - 6, scale: isHovering ? 2.5 : 1 }}
-      transition={{ type: "spring", stiffness: 800, damping: 40 }}
-    />
-  );
+        window.addEventListener('mousemove', moveCursor);
+
+        const interactiveElements = document.querySelectorAll('button, a, [data-cursor="interactive"]');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', handleMouseEnter);
+            el.addEventListener('mouseleave', handleMouseLeave);
+        });
+
+        return () => {
+            window.removeEventListener('mousemove', moveCursor);
+            interactiveElements.forEach(el => {
+                el.removeEventListener('mouseenter', handleMouseEnter);
+                el.removeEventListener('mouseleave', handleMouseLeave);
+            });
+        };
+    }, [cursorX, cursorY]);
+
+    return (
+        <motion.div
+            className="fixed top-0 left-0 w-3 h-3 rounded-full pointer-events-none z-[9999] bg-cyan-400 mix-blend-difference"
+            // 2. Apply the raw motion values for precise tracking
+            style={{
+                x: cursorX,
+                y: cursorY,
+            }}
+            // The hover animation remains
+            animate={{ scale: isHovering ? 2.5 : 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        />
+    );
 }
-
 
 // --- HOOK FOR TEXT SCRAMBLE ANIMATION ---
 const useScramble = (text, duration = 1500, delay = 0) => {
     const [scrambledText, setScrambledText] = useState('');
     const chars = '!<>-_\\/[]{}—=+*^?#________';
-  
+
     useEffect(() => {
-      let frameRequest;
-      let startTime;
-      const animate = (time) => {
-        if (!startTime) startTime = time;
-        const elapsed = time - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const newText = text.split('').map((char, index) => {
-          if (progress * text.length > index) return text[index];
-          if (char === ' ') return ' ';
-          return chars[Math.floor(Math.random() * chars.length)];
-        }).join('');
-        setScrambledText(newText);
-        if (progress < 1) frameRequest = requestAnimationFrame(animate);
-      };
-      const timeoutId = setTimeout(() => {
-        startTime = performance.now();
-        frameRequest = requestAnimationFrame(animate);
-      }, delay);
-      return () => {
-        clearTimeout(timeoutId);
-        cancelAnimationFrame(frameRequest);
-      };
+        let frameRequest;
+        let startTime;
+        const animate = (time) => {
+            if (!startTime) startTime = time;
+            const elapsed = time - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const newText = text.split('').map((char, index) => {
+                if (progress * text.length > index) return text[index];
+                if (char === ' ') return ' ';
+                return chars[Math.floor(Math.random() * chars.length)];
+            }).join('');
+            setScrambledText(newText);
+            if (progress < 1) frameRequest = requestAnimationFrame(animate);
+        };
+        const timeoutId = setTimeout(() => {
+            startTime = performance.now();
+            frameRequest = requestAnimationFrame(animate);
+        }, delay);
+        return () => {
+            clearTimeout(timeoutId);
+            cancelAnimationFrame(frameRequest);
+        };
     }, [text, duration, delay]);
-  
+
     return scrambledText;
 };
-  
+
 // --- HERO SECTION ---
 function Hero() {
     const name = "AMBUJ SHUKLA";
     const scrambledName = useScramble(name, 2000, 500);
     const subtitles = [
-    "AML Analyst at GoCardless",
-    "Huge Interest In Data Science",
-    "Keen Interest In International Relations And Global Affairs",
-    "FC Barcelona Fan",
-    "Daily Workout With Regulatory Compliance at GoCardless",
-    "Playing With Python, R & AI Projects In Free Time 😉",
-    "Building Websites And Experimenting With The Help Of AI 😉",
-    "Roamer And Adventurer",
-    "Not a CS Graduate",
-    "Also Interested In Machine Learning All Thanks To GPT 😉",
-    "Sometimes I Write And Blog",
-    "Like To Go For Camping And Hiking",
-    "I Like To Read About Eastern Philosophies Sometimes",
-    "Sometimes Watching Movies And Web Series",
-    "Gaming Occasionally On Xbox 😉",
-    "C'Mon Scroll Now 😀"
+        "AML Analyst at GoCardless",
+        "Huge Interest In Data Science",
+        "Keen Interest In International Relations And Global Affairs",
+        "FC Barcelona Fan",
+        "Daily Workout With Regulatory Compliance at GoCardless",
+        "Playing With Python, R & AI Projects In Free Time 😉",
+        "Building Websites And Experimenting With The Help Of AI 😉",
+        "Roamer And Adventurer",
+        "Not a CS Graduate",
+        "Also Interested In Machine Learning All Thanks To GPT 😉",
+        "Sometimes I Write And Blog",
+        "Like To Go For Camping And Hiking",
+        "I Like To Read About Eastern Philosophies Sometimes",
+        "Sometimes Watching Movies And Web Series",
+        "Gaming Occasionally On Xbox 😉",
+        "C'Mon Scroll Now 😀"
     ];
     const [subtitleIndex, setSubtitleIndex] = useState(0);
 
@@ -281,19 +297,19 @@ function FloatingSocials() {
         { name: 'Medium', url: 'https://medium.com/@ambuj4373', icon: <MediumIcon /> }
     ];
     return (
-        <motion.div 
+        <motion.div
             className="absolute bottom-10 left-10 flex flex-col gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 2.8, ease: "easeOut" }}
         >
             {socialLinks.map((social) => (
-                <motion.a 
-                    key={social.name} 
-                    href={social.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-gray-400 hover:text-white hover:scale-110 transition-all" 
+                <motion.a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-white hover:scale-110 transition-all"
                     data-cursor="interactive"
                     whileHover={{ scale: 1.2, color: '#00ffff' }}
                     transition={{ type: 'spring', stiffness: 300 }}
@@ -307,249 +323,249 @@ function FloatingSocials() {
 
 // --- Experience Section ---
 function Experience() {
-  const timelineRef = useRef(null);
+    const timelineRef = useRef(null);
 
-  useEffect(() => {
-    const cards = timelineRef.current.querySelectorAll('.timeline-card');
-    gsap.fromTo(cards, { opacity: 0, y: 100, rotationY: 15 }, {
-        opacity: 1, y: 0, rotationY: 0, duration: 0.8, stagger: 0.2, ease: "power2.out",
-        scrollTrigger: { trigger: timelineRef.current, start: "top 80%", end: "bottom 20%", toggleActions: "play none none reverse" }
-    });
-  }, []);
+    useEffect(() => {
+        const cards = timelineRef.current.querySelectorAll('.timeline-card');
+        gsap.fromTo(cards, { opacity: 0, y: 100, rotationY: 15 }, {
+            opacity: 1, y: 0, rotationY: 0, duration: 0.8, stagger: 0.2, ease: "power2.out",
+            scrollTrigger: { trigger: timelineRef.current, start: "top 80%", end: "bottom 20%", toggleActions: "play none none reverse" }
+        });
+    }, []);
 
-  return (
-    <section id="experience" className="min-h-screen py-20 px-6 relative">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          Experience
-        </motion.h2>
-        <div ref={timelineRef} className="space-y-12">
-          {workExperiences.map((exp) => (
-            <motion.div key={exp.id} className="timeline-card group relative backdrop-blur-lg bg-black/20 rounded-2xl p-8 border border-white/10 shadow-2xl" whileHover={{ scale: 1.02, boxShadow: `0 0 40px ${exp.color}40` }} transition={{ type: "spring", stiffness: 300 }}>
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
-              <div className="relative flex flex-col md:flex-row items-center gap-6">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-2">{exp.title}</h3>
-                  <p className="text-cyan-400 font-medium text-lg mb-1">{exp.company}</p>
-                  <p className="text-gray-400 mb-4">{exp.location} • {exp.dates}</p>
-                  <p className="text-gray-300 mb-4">{exp.description}</p>
-                  <ul className="space-y-2">
-                    {exp.responsibilities.map((resp, idx) => (<li key={idx} className="text-gray-300 flex items-start"><span className="text-cyan-400 mr-2">→</span>{resp}</li>))}
-                  </ul>
+    return (
+        <section id="experience" className="min-h-screen py-20 px-6 relative">
+            <div className="max-w-6xl mx-auto">
+                <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                    Experience
+                </motion.h2>
+                <div ref={timelineRef} className="space-y-12">
+                    {workExperiences.map((exp) => (
+                        <motion.div key={exp.id} className="timeline-card group relative backdrop-blur-lg bg-black/20 rounded-2xl p-8 border border-white/10 shadow-2xl" whileHover={{ scale: 1.02, boxShadow: `0 0 40px ${exp.color}40` }} transition={{ type: "spring", stiffness: 300 }}>
+                            <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
+                            <div className="relative flex flex-col md:flex-row items-center gap-6">
+                                <div className="flex-1">
+                                    <h3 className="text-2xl font-bold text-white mb-2">{exp.title}</h3>
+                                    <p className="text-cyan-400 font-medium text-lg mb-1">{exp.company}</p>
+                                    <p className="text-gray-400 mb-4">{exp.location} • {exp.dates}</p>
+                                    <p className="text-gray-300 mb-4">{exp.description}</p>
+                                    <ul className="space-y-2">
+                                        {exp.responsibilities.map((resp, idx) => (<li key={idx} className="text-gray-300 flex items-start"><span className="text-cyan-400 mr-2">→</span>{resp}</li>))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+            </div>
+        </section>
+    );
 }
 
 
 // --- Projects Section ---
 function Projects() {
-  return (
-    <section id="projects" className="min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          Featured Projects
-        </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.map((project, index) => (
-            <motion.a key={project.id} href={project.link} target="_blank" rel="noopener noreferrer" className="group relative block aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all duration-300" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.2 }} whileHover={{ scale: 1.05, rotateY: 2 }} data-cursor="interactive">
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-lg"></div>
-              <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-black bg-opacity-60 group-hover:bg-opacity-75 transition-all duration-500" />
-              <div className="relative p-6 flex flex-col h-full text-white">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{project.title}</h3>
-                <p className="text-gray-300 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {project.tech.map((tech, idx) => (<span key={idx} className="px-3 py-1 text-xs bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full text-cyan-300 border border-cyan-500/30">{tech}</span>))}
+    return (
+        <section id="projects" className="min-h-screen py-20 px-6">
+            <div className="max-w-6xl mx-auto">
+                <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                    Featured Projects
+                </motion.h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {projects.map((project, index) => (
+                        <motion.a key={project.id} href={project.link} target="_blank" rel="noopener noreferrer" className="group relative block aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all duration-300" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.2 }} whileHover={{ scale: 1.05, rotateY: 2 }} data-cursor="interactive">
+                            <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-lg"></div>
+                            <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110" />
+                            <div className="absolute inset-0 bg-black bg-opacity-60 group-hover:bg-opacity-75 transition-all duration-500" />
+                            <div className="relative p-6 flex flex-col h-full text-white">
+                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{project.title}</h3>
+                                <p className="text-gray-300 mb-4">{project.description}</p>
+                                <div className="flex flex-wrap gap-2 mt-auto">
+                                    {project.tech.map((tech, idx) => (<span key={idx} className="px-3 py-1 text-xs bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full text-cyan-300 border border-cyan-500/30">{tech}</span>))}
+                                </div>
+                                <div className="mt-4 text-right opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                    <span className="font-semibold text-purple-400">View Project →</span>
+                                </div>
+                            </div>
+                        </motion.a>
+                    ))}
                 </div>
-                <div className="mt-4 text-right opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <span className="font-semibold text-purple-400">View Project →</span>
-                </div>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+            </div>
+        </section>
+    );
 }
 
 
 // --- TABBED SKILLS SECTION ---
 function Skills() {
-  const [activeTab, setActiveTab] = useState('professional');
-  const tabs = [
-    { id: 'professional', label: 'Professional', icon: <BriefcaseIcon /> },
-    { id: 'technical', label: 'Technical', icon: <CodeIcon /> },
-    { id: 'personal', label: 'Personal', icon: <UserIcon /> },
-  ];
+    const [activeTab, setActiveTab] = useState('professional');
+    const tabs = [
+        { id: 'professional', label: 'Professional', icon: <BriefcaseIcon /> },
+        { id: 'technical', label: 'Technical', icon: <CodeIcon /> },
+        { id: 'personal', label: 'Personal', icon: <UserIcon /> },
+    ];
 
-  return (
-    <section id="skills" className="min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-pink-400 to-red-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          My Skillset
-        </motion.h2>
-        <div className="flex justify-center border-b border-white/10 mb-12">
-          {tabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'text-cyan-400' : 'text-gray-400'} relative flex items-center gap-2 px-6 py-4 text-lg font-medium transition-colors hover:text-white`} data-cursor="interactive">
-              {tab.icon} {tab.label}
-              {activeTab === tab.id && (<motion.div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-500" layoutId="underline" />)}
-            </button>
-          ))}
-        </div>
-        <AnimatePresence mode="wait">
-          <motion.div key={activeTab} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {skillsData[activeTab].map((skill, index) => (
-              <motion.div key={skill.title} className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-6 border border-white/10" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }} whileHover={{ y: -5, boxShadow: "0 0 20px rgba(0, 255, 255, 0.1)"}}>
-                <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-pink-500 to-red-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
-                <div className="relative">
-                    <h3 className="text-xl font-bold text-white mb-3">{skill.title}</h3>
-                    <p className="text-gray-300">{skill.content}</p>
+    return (
+        <section id="skills" className="min-h-screen py-20 px-6">
+            <div className="max-w-6xl mx-auto">
+                <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-pink-400 to-red-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                    My Skillset
+                </motion.h2>
+                <div className="flex justify-center border-b border-white/10 mb-12">
+                    {tabs.map(tab => (
+                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'text-cyan-400' : 'text-gray-400'} relative flex items-center gap-2 px-6 py-4 text-lg font-medium transition-colors hover:text-white`} data-cursor="interactive">
+                            {tab.icon} {tab.label}
+                            {activeTab === tab.id && (<motion.div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-500" layoutId="underline" />)}
+                        </button>
+                    ))}
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </section>
-  );
+                <AnimatePresence mode="wait">
+                    <motion.div key={activeTab} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {skillsData[activeTab].map((skill, index) => (
+                            <motion.div key={skill.title} className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-6 border border-white/10" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }} whileHover={{ y: -5, boxShadow: "0 0 20px rgba(0, 255, 255, 0.1)" }}>
+                                <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-pink-500 to-red-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
+                                <div className="relative">
+                                    <h3 className="text-xl font-bold text-white mb-3">{skill.title}</h3>
+                                    <p className="text-gray-300">{skill.content}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </section>
+    );
 }
 
 
 // --- Education Section ---
 function Education() {
-  return (
-    <section id="education" className="min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          Education
-        </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {education.map((edu, index) => (
-            <motion.div key={edu.id} className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-6 border border-white/10 transition-all duration-300" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.2 }} whileHover={{ scale: 1.05, y: -5 }}>
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
-              <div className="relative">
-                <div className={`w-3 h-3 rounded-full mb-4 ${edu.status === 'current' ? 'bg-green-400' : 'bg-blue-400'}`} />
-                <h3 className="text-lg font-bold text-white mb-2">{edu.title}</h3>
-                <p className="text-cyan-400 font-medium mb-1">{edu.institution}</p>
-                <p className="text-gray-400 text-sm mb-3">{edu.dates}</p>
-                <p className="text-gray-300 text-sm mb-4">{edu.description}</p>
-                {edu.link && (<a href={edu.link} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors" data-cursor="interactive">View Certificate →</a>)}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+    return (
+        <section id="education" className="min-h-screen py-20 px-6">
+            <div className="max-w-6xl mx-auto">
+                <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                    Education
+                </motion.h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {education.map((edu, index) => (
+                        <motion.div key={edu.id} className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-6 border border-white/10 transition-all duration-300" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.2 }} whileHover={{ scale: 1.05, y: -5 }}>
+                            <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
+                            <div className="relative">
+                                <div className={`w-3 h-3 rounded-full mb-4 ${edu.status === 'current' ? 'bg-green-400' : 'bg-blue-400'}`} />
+                                <h3 className="text-lg font-bold text-white mb-2">{edu.title}</h3>
+                                <p className="text-cyan-400 font-medium mb-1">{edu.institution}</p>
+                                <p className="text-gray-400 text-sm mb-3">{edu.dates}</p>
+                                <p className="text-gray-300 text-sm mb-4">{edu.description}</p>
+                                {edu.link && (<a href={edu.link} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors" data-cursor="interactive">View Certificate →</a>)}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
 }
 
 
 // --- Articles Section ---
 function Articles() {
-  return (
-    <section id="articles" className="min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent pb-2" // Added pb-2 for padding-bottom
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Thoughts & Publications
-        </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.map((article, index) => (
-            <motion.a
-              key={article.id}
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative block aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              data-cursor="interactive"
-            >
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-lg"></div>
-              <img
-                src={article.image}
-                alt={article.title}
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-60 group-hover:bg-opacity-75 transition-all duration-500" />
-              <div className="relative p-4 flex flex-col h-full text-white">
-                <h3 className="text-md font-bold mb-2 group-hover:text-orange-400 transition-colors">
-                  {article.title}
-                </h3>
-                <div className="flex items-center justify-between text-xs text-gray-400">
-                  <span>{article.platform}</span>
-                  <span>{article.readTime}</span>
+    return (
+        <section id="articles" className="min-h-screen py-20 px-6">
+            <div className="max-w-6xl mx-auto">
+                <motion.h2
+                    className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent pb-2"
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    Thoughts & Publications
+                </motion.h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {articles.map((article, index) => (
+                        <motion.a
+                            key={article.id}
+                            href={article.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative block aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300"
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: index * 0.1 }}
+                            whileHover={{ scale: 1.05, y: -5 }}
+                            data-cursor="interactive"
+                        >
+                            <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-lg"></div>
+                            <img
+                                src={article.image}
+                                alt={article.title}
+                                className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-60 group-hover:bg-opacity-75 transition-all duration-500" />
+                            <div className="relative p-4 flex flex-col h-full text-white">
+                                <h3 className="text-md font-bold mb-2 group-hover:text-orange-400 transition-colors">
+                                    {article.title}
+                                </h3>
+                                <div className="flex items-center justify-between text-xs text-gray-400">
+                                    <span>{article.platform}</span>
+                                    <span>{article.readTime}</span>
+                                </div>
+                                <div className="mt-auto text-right opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                    <span className="font-semibold text-orange-400 text-sm">
+                                        Read →
+                                    </span>
+                                </div>
+                            </div>
+                        </motion.a>
+                    ))}
                 </div>
-                <div className="mt-auto text-right opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <span className="font-semibold text-orange-400 text-sm">
-                    Read →
-                  </span>
-                </div>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+            </div>
+        </section>
+    );
 }
 
 
 // --- Contact Section ---
 function Contact() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); setIsSubmitting(true); setSubmitError('');
-    try {
-      const response = await fetch('https://formspree.io/f/xkgzyvqg', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
-      if (response.ok) {
-        setIsSubmitted(true); setFormData({ name: '', email: '', message: '' }); setTimeout(() => setIsSubmitted(false), 5000);
-      } else { throw new Error('Failed to send message'); }
-    } catch (error) {
-      setSubmitError('Failed to send message. Please try again.');
-    } finally { setIsSubmitting(false); }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault(); setIsSubmitting(true); setSubmitError('');
+        try {
+            const response = await fetch('https://formspree.io/f/xkgzyvqg', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+            if (response.ok) {
+                setIsSubmitted(true); setFormData({ name: '', email: '', message: '' }); setTimeout(() => setIsSubmitted(false), 5000);
+            } else { throw new Error('Failed to send message'); }
+        } catch (error) {
+            setSubmitError('Failed to send message. Please try again.');
+        } finally { setIsSubmitting(false); }
+    };
 
-  const handleChange = (e) => { setFormData(prev => ({ ...prev, [e.target.name]: e.target.value })); if (submitError) setSubmitError(''); };
+    const handleChange = (e) => { setFormData(prev => ({ ...prev, [e.target.name]: e.target.value })); if (submitError) setSubmitError(''); };
 
-  return (
-    <section id="contact" className="min-h-screen py-20 px-6">
-      <div className="max-w-4xl mx-auto">
-        <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          Get In Touch
-        </motion.h2>
-        <motion.div className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-8 border border-white/10" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
-          <form onSubmit={handleSubmit} className="relative space-y-6">
-            <input type="text" name="name" value={formData.name} onChange={handleChange} required disabled={isSubmitting} className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all" placeholder="Your Name" />
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required disabled={isSubmitting} className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all" placeholder="Your Email" />
-            <textarea name="message" value={formData.message} onChange={handleChange} required rows={5} disabled={isSubmitting} className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-none transition-all" placeholder="Your message..." />
-            {submitError && (<p className="text-red-400 text-sm text-center">{submitError}</p>)}
-            <motion.button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-white font-semibold tracking-wider hover:shadow-lg hover:shadow-cyan-500/50 transition-shadow" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} data-cursor="interactive">
-              {isSubmitting ? 'Sending...' : isSubmitted ? 'Message Sent! ✔' : 'Send Message'}
-            </motion.button>
-          </form>
-        </motion.div>
-      </div>
-    </section>
-  );
+    return (
+        <section id="contact" className="min-h-screen py-20 px-6">
+            <div className="max-w-4xl mx-auto">
+                <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                    Get In Touch
+                </motion.h2>
+                <motion.div className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-8 border border-white/10" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                    <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
+                    <form onSubmit={handleSubmit} className="relative space-y-6">
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} required disabled={isSubmitting} className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all" placeholder="Your Name" />
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} required disabled={isSubmitting} className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all" placeholder="Your Email" />
+                        <textarea name="message" value={formData.message} onChange={handleChange} required rows={5} disabled={isSubmitting} className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-none transition-all" placeholder="Your message..." />
+                        {submitError && (<p className="text-red-400 text-sm text-center">{submitError}</p>)}
+                        <motion.button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-white font-semibold tracking-wider hover:shadow-lg hover:shadow-cyan-500/50 transition-shadow" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} data-cursor="interactive">
+                            {isSubmitting ? 'Sending...' : isSubmitted ? 'Message Sent! ✔' : 'Send Message'}
+                        </motion.button>
+                    </form>
+                </motion.div>
+            </div>
+        </section>
+    );
 }
 
 // --- FUTURISTIC FOOTER with Clock & Contacts ---
@@ -575,7 +591,7 @@ function FuturisticFooter() {
         <footer className="py-8 px-6 bg-black/50 backdrop-blur-md border-t border-white/10">
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
-                     <p className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} Ambuj Shukla. All rights reserved.</p>
+                    <p className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} Ambuj Shukla. All rights reserved.</p>
                 </div>
                 <div className="flex items-center gap-6">
                     <div className="text-cyan-400 font-mono text-2xl tracking-widest" style={{ textShadow: '0 0 5px #00ffff' }}>
@@ -597,32 +613,32 @@ function FuturisticFooter() {
 
 // --- MAIN APP COMPONENT ---
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 2000);
+        return () => clearTimeout(timer);
+    }, []);
 
-  if (isLoading) {
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 bg-black flex items-center justify-center">
+                <motion.div className="w-16 h-16 border-4 border-t-4 border-cyan-500 rounded-full animate-spin" />
+            </div>
+        );
+    }
+
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
-        <motion.div className="w-16 h-16 border-4 border-t-4 border-cyan-500 rounded-full animate-spin" />
-      </div>
+        <div className="text-white bg-black aurora-background">
+            <MinimalCursor />
+            <Hero />
+            <Experience />
+            <Projects />
+            <Skills />
+            <Education />
+            <Articles />
+            <Contact />
+            <FuturisticFooter />
+        </div>
     );
-  }
-
-  return (
-    <div className="text-white bg-black aurora-background">
-      <MinimalCursor />
-      <Hero />
-      <Experience />
-      <Projects />
-      <Skills />
-      <Education />
-      <Articles />
-      <Contact />
-      <FuturisticFooter />
-    </div>
-  );
 }
