@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-// useSpring is no longer needed, so it's removed
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, Line } from '@react-three/drei';
-import gsap from 'https://cdn.skypack.dev/gsap';
-import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap/ScrollTrigger.js';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
-import './index.css'; 
+import './index.css';
 
 // --- ICONS ---
 const CodeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>;
@@ -14,58 +13,56 @@ const BriefcaseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" h
 const UserIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
 const LinkedInIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
 const GitHubIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>;
-const MediumIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5.82 6.18c0-1.9.31-3.61.94-5.14a.5.5 0 0 1 .93.35v15.22a.5.5 0 0 1-.93.35c-.63-1.53-.94-3.24-.94-5.14zm5.15 10.33c-.43.43-.83.79-1.21 1.07a.5.5 0 0 1-.68-.1L6.1 13.21a.5.5 0 0 1 .1-.68c.3-.23.63-.44.98-.63l5.26-2.85c.53-.28.88-.82.88-1.41V6.5a.5.5 0 0 1 .8-.4l4.6 2.53a.5.5 0 0 1 .25.64l-3.3 9.38a.5.5 0 0 1-.88.13l-3.24-4.86z"></path></svg>;
+const MediumIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a4.44 4.44 0 0 1-4.39 4.44A4.44 4.44 0 0 1 4.7 12a4.44 4.44 0 0 1 4.45-4.44A4.44 4.44 0 0 1 13.54 12zm7.4 0a2.53 2.53 0 0 1-2.52 2.53c-1.4 0-2.53-1.13-2.53-2.53s1.13-2.52 2.53-2.52a2.53 2.53 0 0 1 2.52 2.52zm4.33 0a1.15 1.15 0 0 1-1.15 1.15c-.63 0-1.14-.52-1.14-1.15s.51-1.15 1.14-1.15c.64 0 1.15.52 1.15 1.15z"/></svg>;
 const PhoneIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
 const EmailIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- DATA ---
+// --- UPDATED DATA FROM YOUR RESUME ---
 const workExperiences = [
-    { id: 1, title: "Anti-Money Laundering Analyst", company: "GoCardless", location: "Riga, Latvia", dates: "2024 - Present", description: "AML compliance with internal policies and external requirements.", responsibilities: ["Conduct enhanced due diligence", "Conduct comprehensive risk assessments", "PEP, Adverse Media and Enforcement Screening"], color: "#00D4FF" },
-    { id: 2, title: "KYC and Support Specialist", company: "GoCardless", location: "Riga, Latvia", dates: "2023 - 2024", description: "Focus on Customer onboarding and compliance verification.", responsibilities: ["Comprehensive customer due diligence", " Manage KYC processes and resolve system-related customer inquiries", "Collaborated with cross-functional teams"], color: "#00D4FF" },
-    { id: 3, title: "Equities Operations Specialist", company: "SEB", location: "Riga, Latvia", dates: "2022 - 2022", description: "Managed equity operations across Nordic markets.", responsibilities: ["Matching and Settlement of Daily booked trades", "Collaborated with market partners for smooth operations", "Managed reconciliation and daily settlements"], color: "#0066CC" },
-    { id: 4, title: "Data Associate", company: "Eternal Limited (Zomato)", location: "Gurugram, India", dates: "2020 - 2021", description: "Zomato platform specialist for restaurant onboarding.", responsibilities: ["Onboarded B2B restaurants onto Zomato platform", "Verified restaurant and their presence", "Reviewing their license and KYB checks"], color: "#E23744" }
+    { id: 1, title: "Anti-Money Laundering Analyst", company: "GoCardless", location: "Riga, Latvia", dates: "Jan 2024 - Present", description: "Enhanced Due Diligence (EDD), Customer Due Diligence (CDD), and Transaction Monitoring.", responsibilities: ["Conducting deeper investigations on high-risk customers.", "Verifying customer identities and assessing risk levels.", "Analyzing transactions for suspicious activity patterns.", "Screening customers against global sanction lists and identifying PEPs.", "Raising Suspicious Activity Reports (SARs)."], color: "#00D4FF" },
+    { id: 2, title: "KYC and Support Specialist", company: "GoCardless", location: "Riga, Latvia", dates: "May 2023 - Dec 2023", description: "Focused on customer onboarding, due diligence, and compliance verification.", responsibilities: ["Conducted due diligence on new customers and ensured KYC compliance.", "Handled customer queries related to KYC.", "Coordinated with sales, operations, and legal teams."], color: "#00BFFF" },
+    { id: 3, title: "Equities Operations Specialist", company: "SEB", location: "Riga, Latvia", dates: "Feb 2022 - Oct 2022", description: "Managed equity operations across Nordic markets (HEX, OSE, CSE).", responsibilities: ["Problem-solved daily trades efficiently.", "Handled control, reconciliation, and corporate events.", "Collaborated with global business partners for smooth operations."], color: "#0066CC" },
+    { id: 4, title: "Data Associate", company: "Eternal Limited (Zomato)", location: "Gurugram, India", dates: "Aug 2020 - Jul 2021", description: "Zomato platform specialist for restaurant onboarding.", responsibilities: ["Onboarded B2B restaurants onto the Zomato platform.", "Verified restaurant presence and reviewed licenses.", "Performed Know Your Business (KYB) checks."], color: "#E23744" }
 ];
+
 const projects = [
-    { id: 1, title: "CNN Model in R", description: "Advanced convolutional neural network for image classification using TensorFlow and Keras in R.", image: "https://placehold.co/600x400/0a0a0a/ffffff?text=CNN+Model", link: "https://github.com/ambuj4373/Creating-CNN-MODEL-IN-R", tech: ["R", "TensorFlow", "Keras", "Data Science"], featured: true },
-    { id: 2, title: "Portfolio Website", description: "This cutting-edge portfolio featuring Three.js, GSAP, and modern web technologies.", image: "https://placehold.co/600x400/1a1a1a/ffffff?text=Portfolio", link: "https://github.com/ambuj4373/cv-website", tech: ["React", "Three.js", "GSAP", "Tailwind"], featured: true }
+    { id: 1, title: "CNN Model for Image Classification", description: "Built a convolutional neural network using R, Keras & TensorFlow to classify images with 90% accuracy.", image: "https://placehold.co/600x400/0a0a0a/ffffff?text=CNN+in+R", link: "https://github.com/ambuj4373/Creating-CNN-MODEL-IN-R", tech: ["R", "Keras", "TensorFlow", "Deep Learning"], featured: true },
+    { id: 2, title: "Economic Analysis with Data Science", description: "Conducted statistical analysis and developed predictive models to forecast macroeconomic indicators using R.", image: "https://placehold.co/600x400/1a1a1a/ffffff?text=Data+Analysis", link: "https://medium.com/@ambuj4373/list/data-analyst-87df1359ed9d", tech: ["R", "Tidyverse", "ggplot2", "Machine Learning"], featured: true }
 ];
+
 const skillsData = {
     professional: [
-        { title: "AML & Compliance", content: "Leading anti-money laundering investigations and regulatory compliance at GoCardless, including enhanced due diligence, PEP, Adverse media and Enforcement Screenings, and monitoring high-risk customers." },
-        { title: "KYC & Customer Onboarding", content: "Managing customer onboarding, resolving KYC queries, and ensuring compliance across teams." },
-        { title: "Banking Operations", content: "Experience at SEB handling equity operations, trade reconciliation, and resolving issues across Nordic markets." },
-        { title: "Tools I Use", content: "LexisNexis, World-Check, Dow Jones Risk & Compliance, ComplyAdvantage, Ondato / Sumsub, company's internal tools and softwares." }
+        { title: "Finance & Banking", content: "Equities Settlement, Bank Reconciliation, Securities Settlement, Trade Settlement, SWIFT." },
+        { title: "AML & Compliance", content: "Leading anti-money laundering investigations and regulatory compliance, including EDD, CDD, PEP & Sanctions Screening, and Transaction Monitoring." },
+        { title: "KYC & Onboarding", content: "Managing customer onboarding, due diligence processes, and ensuring regulatory compliance across teams." },
+        { title: "Tools I Use", content: "LexisNexis, SAS, World-Check, Dow Jones Risk & Compliance, ComplyAdvantage, MS Office Suite, Confluence, Jira." }
     ],
     technical: [
-        { title: "Data Science & Analytics", content: "Working with R, Python, and AI tools for data analysis, visualization, and predictive modeling." },
-        { title: "Web & Portfolio Development", content: "Built interactive projects and websites using React, Three.js, Tailwind, and GSAP, sometimes experimenting with AI assistance." },
-        { title: "Machine Learning Projects", content: "Created models like CNNs for image classification as part of learning and portfolio work." }
+        { title: "Data & Analytics", content: "R, RStudio, SQL (MySQL, PostgreSQL), Excel, Power BI, Tableau, Data Collection, Processing, Analysis, and Visualization." },
+        { title: "Programming", content: "R, SQL, GGPLOT2, ORM (Sequelize). Currently expanding skills in Python for Data Science." },
+        { title: "Machine Learning", content: "Practical experience in building models like CNNs, Linear/Logistic Regression, and Random Forest for classification and prediction tasks." }
     ],
     personal: [
-        { title: "Writing & Learning", content: "Reading new articles and learning about data science, geopolitics, philosophy, and upcoming tech trends." },
-        { title: "Sports", content: "Passionate about football, fan of FC Barcelona, and enjoy following matches and tactics." },
-        { title: "Outdoors & Travel", content: "Love travelling, camping, and exploring new places." },
-        { title: "Entertainment & Curiosity", content: "Enjoy movies, music, and exploring anything new or exciting." }
+        { title: "Writing & Learning", content: "Continuously learning about data science, geopolitics, and tech trends. I share insights through my articles on Medium." },
+        { title: "Collaboration", content: "Actively collaborate with data scientists and economists through online channels like Medium, Reddit, and Discord." },
+        { title: "Interests", content: "Passionate about football (FC Barcelona fan), enjoy movies, music, and exploring new places through travel and hiking." }
     ]
 };
+
 const education = [
-    { id: 1, title: "International Business with Specialisation in International Relations", institution: "University of Latvia", dates: "2024 - Present", type: "Master's Degree", description: "Advanced studies in international business strategy and global relations.", link: "https://www.lu.lv/en/", status: "current" },
-    { id: 2, title: "Google Data Analytics Specialization", institution: "Coursera", dates: "2022", type: "Professional Certificate", description: "Comprehensive data analytics covering SQL, R, and visualization.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/AAQR7QCNHPTV", status: "completed" },
-    { id: 3, title: "IBM Applied Data Science with R", institution: "Coursera", dates: "2023", type: "Professional Certificate", description: "Applied data science using R for statistical analysis and ML.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/ASVE32JK5C66", status: "completed" }
+    { id: 1, title: "MSc in Organisation and Management of International Economic Relations", institution: "Riga Technical University", dates: "2021 - Present", description: "Focusing on International Trade, Globalization, Financial Markets, and the role of international organizations like the WTO & IMF.", link: "https://www.rtu.lv/", status: "current" },
+    { id: 2, title: "Google Data Analytics Specialization", institution: "Coursera", dates: "2022", description: "Comprehensive data analytics training covering SQL, R, Tableau, and data-driven decision making.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/AAQR7QCNHPTV", status: "completed" },
+    { id: 3, title: "IBM Applied Data Science with R", institution: "Coursera", dates: "2023", description: "Applied data science skills using R for statistical analysis, data visualization, and machine learning.", link: "https://www.coursera.org/account/accomplishments/specialization/certificate/ASVE32JK5C66", status: "completed" }
 ];
+
 const articles = [
     { id: 1, title: "Discovering Hidden Gems: Great R Libraries You Might Have Missed", url: "https://medium.com/r-evolution/discovering-hidden-gems-great-r-libraries-you-might-have-missed-9bae691ff552", platform: "Medium", readTime: "8 min read", image: "https://placehold.co/600x400/000000/FFFFFF?text=Article+1" },
     { id: 2, title: "ggplot2 3.3.0 - Hands-on New Features", url: "https://medium.com/p/69b0336f16eb", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/111111/FFFFFF?text=Article+2" },
     { id: 3, title: "Visualizing Hierarchical Data with Sunburst Charts in R", url: "https://medium.com/p/22b101f0ebfc", platform: "Medium", readTime: "7 min read", image: "https://placehold.co/600x400/222222/FFFFFF?text=Article+3" },
-    { id: 4, title: "From Brinkmanship to a Fragile Truce", url: "https://ambuj4373.medium.com/from-brinkmanship-to-a-fragile-truce-how-the-may-2025-ceasefire-is-reshaping-indias-policy-d2e39639fab0", platform: "Medium", readTime: "5 min read", image: "https://placehold.co/600x400/333333/FFFFFF?text=Article+4" },
-    { id: 5, title: "Unlocking the Power of the GT Package in R", url: "https://medium.com/r-evolution/unlocking-the-power-of-the-gt-package-in-r-an-underrated-gem-for-beautiful-tables-5b798355cf38", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/444444/FFFFFF?text=Article+5" },
-    { id: 6, title: "Tools and Techniques Features in R", url: "https://medium.com/r-evolution/tools-and-techniques-features-in-r-3614edc0e419", platform: "Medium", readTime: "4 min read", image: "https://placehold.co/600x400/555555/FFFFFF?text=Article+6" },
-    { id: 7, title: "R Packages in 2024: Fresh Tools", url: "https://medium.com/r-evolution/r-packages-in-2024-fresh-tools-f25939267eda", platform: "Medium", readTime: "5 min read", image: "https://placehold.co/600x400/666666/FFFFFF?text=Article+7" },
-    { id: 8, title: "The Hidden Players Shaping Global Geopolitics", url: "https://ambuj4373.medium.com/the-hidden-players-shaping-the-future-of-global-geopolitics-and-economy-ad022f35352c", platform: "Medium", readTime: "7 min read", image: "https://placehold.co/600x400/777777/FFFFFF?text=Article+8" },
-    { id: 9, title: "Analyzing Sales Performance with R", url: "https://medium.com/r-evolution/analyzing-sales-performance-with-r-b1270c62b182", platform: "Medium", readTime: "6 min read", image: "https://placehold.co/600x400/888888/FFFFFF?text=Article+9" }
 ];
+
 
 // --- 3D PARTICLE BACKGROUND ---
 function ParticleField() {
@@ -140,32 +137,25 @@ function MatrixRain({ count = 100 }) {
 }
 
 
-// --- MINIMAL CURSOR (PRECISE & OPTIMIZED) ---
+// --- MINIMAL CURSOR ---
 function MinimalCursor() {
     const [isHovering, setIsHovering] = useState(false);
-
-    // 1. Use motion values for performant 1:1 tracking
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
     useEffect(() => {
         const moveCursor = (e) => {
-            // Set the cursor position directly without any spring smoothing
-            cursorX.set(e.clientX - 6); // -6 to center the 12px cursor
+            cursorX.set(e.clientX - 6);
             cursorY.set(e.clientY - 6);
         };
-
         const handleMouseEnter = () => setIsHovering(true);
         const handleMouseLeave = () => setIsHovering(false);
-
         window.addEventListener('mousemove', moveCursor);
-
         const interactiveElements = document.querySelectorAll('button, a, [data-cursor="interactive"]');
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', handleMouseEnter);
             el.addEventListener('mouseleave', handleMouseLeave);
         });
-
         return () => {
             window.removeEventListener('mousemove', moveCursor);
             interactiveElements.forEach(el => {
@@ -178,12 +168,7 @@ function MinimalCursor() {
     return (
         <motion.div
             className="fixed top-0 left-0 w-3 h-3 rounded-full pointer-events-none z-[9999] bg-cyan-400 mix-blend-difference"
-            // 2. Apply the raw motion values for precise tracking
-            style={{
-                x: cursorX,
-                y: cursorY,
-            }}
-            // The hover animation remains
+            style={{ x: cursorX, y: cursorY }}
             animate={{ scale: isHovering ? 2.5 : 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
         />
@@ -228,22 +213,10 @@ function Hero() {
     const name = "AMBUJ SHUKLA";
     const scrambledName = useScramble(name, 2000, 500);
     const subtitles = [
-        "AML Analyst at GoCardless",
-        "Huge Interest In Data Science",
-        "Keen Interest In International Relations And Global Affairs",
-        "FC Barcelona Fan",
-        "Daily Workout With Regulatory Compliance at GoCardless",
-        "Playing With Python, R & AI Projects In Free Time 😉",
-        "Building Websites And Experimenting With The Help Of AI 😉",
-        "Roamer And Adventurer",
-        "Not a CS Graduate",
-        "Also Interested In Machine Learning All Thanks To GPT 😉",
-        "Sometimes I Write And Blog",
-        "Like To Go For Camping And Hiking",
-        "I Like To Read About Eastern Philosophies Sometimes",
-        "Sometimes Watching Movies And Web Series",
-        "Gaming Occasionally On Xbox 😉",
-        "C'Mon Scroll Now 😀"
+        "Anti-Money Laundering Analyst",
+        "Data Science Enthusiast",
+        "Passionate about International Relations",
+        "Building with R, SQL, and React"
     ];
     const [subtitleIndex, setSubtitleIndex] = useState(0);
 
@@ -266,10 +239,10 @@ function Hero() {
             </div>
             <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/80 to-purple-900/20" />
             <div className="relative z-10 text-center px-6">
-                <h1 className="text-6xl md:text-8xl font-bold mb-6 relative shine-effect bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent font-mono tracking-wider">
+                <h1 className="text-6xl md:text-8xl font-bold mb-4 relative shine-effect bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent font-mono tracking-wider">
                     {scrambledName}
                 </h1>
-                <div className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto h-8">
+                <div className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto h-8 mb-8">
                     <AnimatePresence mode="wait">
                         <motion.span
                             key={subtitleIndex}
@@ -283,6 +256,20 @@ function Hero() {
                         </motion.span>
                     </AnimatePresence>
                 </div>
+                 {/* --- DOWNLOAD CV BUTTON ADDED HERE --- */}
+                <motion.a
+                    href="/Ambuj_Shukla_Resume.pdf"
+                    download="Ambuj_Shukla_CV.pdf"
+                    className="mt-8 px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg text-white font-semibold tracking-wider hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    data-cursor="interactive"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 2.0 }}
+                >
+                    Download CV
+                </motion.a>
             </div>
             <FloatingSocials />
         </section>
@@ -292,9 +279,10 @@ function Hero() {
 // --- FLOATING SOCIALS ---
 function FloatingSocials() {
     const socialLinks = [
-        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ambuj-s-23806915a/', icon: <LinkedInIcon /> },
+        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ambuj-shukla-23806915a/', icon: <LinkedInIcon /> },
         { name: 'GitHub', url: 'https://github.com/ambuj4373', icon: <GitHubIcon /> },
-        { name: 'Medium', url: 'https://medium.com/@ambuj4373', icon: <MediumIcon /> }
+        { name: 'Medium', url: 'https://medium.com/@ambuj4373', icon: <MediumIcon /> },
+        { name: 'Email', url: 'mailto:asjshuklaji@gmail.com', icon: <EmailIcon /> }
     ];
     return (
         <motion.div
@@ -362,7 +350,6 @@ function Experience() {
     );
 }
 
-
 // --- Projects Section ---
 function Projects() {
     return (
@@ -394,7 +381,6 @@ function Projects() {
         </section>
     );
 }
-
 
 // --- TABBED SKILLS SECTION ---
 function Skills() {
@@ -437,26 +423,25 @@ function Skills() {
     );
 }
 
-
 // --- Education Section ---
 function Education() {
     return (
         <section id="education" className="min-h-screen py-20 px-6">
             <div className="max-w-6xl mx-auto">
                 <motion.h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                    Education
+                    Education & Certifications
                 </motion.h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {education.map((edu, index) => (
                         <motion.div key={edu.id} className="group relative backdrop-blur-lg bg-black/20 rounded-2xl p-6 border border-white/10 transition-all duration-300" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.2 }} whileHover={{ scale: 1.05, y: -5 }}>
                             <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-md"></div>
                             <div className="relative">
-                                <div className={`w-3 h-3 rounded-full mb-4 ${edu.status === 'current' ? 'bg-green-400' : 'bg-blue-400'}`} />
+                                <div className={`w-3 h-3 rounded-full mb-4 ${edu.status === 'current' ? 'bg-green-400 animate-pulse' : 'bg-blue-400'}`} />
                                 <h3 className="text-lg font-bold text-white mb-2">{edu.title}</h3>
                                 <p className="text-cyan-400 font-medium mb-1">{edu.institution}</p>
                                 <p className="text-gray-400 text-sm mb-3">{edu.dates}</p>
                                 <p className="text-gray-300 text-sm mb-4">{edu.description}</p>
-                                {edu.link && (<a href={edu.link} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors" data-cursor="interactive">View Certificate →</a>)}
+                                {edu.link && (<a href={edu.link} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors" data-cursor="interactive">View Credential →</a>)}
                             </div>
                         </motion.div>
                     ))}
@@ -465,7 +450,6 @@ function Education() {
         </section>
     );
 }
-
 
 // --- Articles Section ---
 function Articles() {
@@ -523,7 +507,6 @@ function Articles() {
     );
 }
 
-
 // --- Contact Section ---
 function Contact() {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -568,7 +551,7 @@ function Contact() {
     );
 }
 
-// --- FUTURISTIC FOOTER with Clock & Contacts ---
+// --- FOOTER ---
 function FuturisticFooter() {
     const [time, setTime] = useState(new Date());
 
@@ -580,9 +563,8 @@ function FuturisticFooter() {
     const formatTime = (date) => date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 
     const contactLinks = [
-        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ambuj-s-23806915a/', icon: <LinkedInIcon /> },
+        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ambuj-shukla-23806915a/', icon: <LinkedInIcon /> },
         { name: 'GitHub', url: 'https://github.com/ambuj4373', icon: <GitHubIcon /> },
-        { name: 'Medium', url: 'https://medium.com/@ambuj4373', icon: <MediumIcon /> },
         { name: 'Email', url: 'mailto:asjshuklaji@gmail.com', icon: <EmailIcon /> },
         { name: 'Phone', url: 'tel:+37128705807', icon: <PhoneIcon /> },
     ];
@@ -591,7 +573,7 @@ function FuturisticFooter() {
         <footer className="py-8 px-6 bg-black/50 backdrop-blur-md border-t border-white/10">
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
-                    <p className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} Ambuj Shukla. All rights reserved.</p>
+                    <p className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} Ambuj Shukla. Riga, Latvia.</p>
                 </div>
                 <div className="flex items-center gap-6">
                     <div className="text-cyan-400 font-mono text-2xl tracking-widest" style={{ textShadow: '0 0 5px #00ffff' }}>
