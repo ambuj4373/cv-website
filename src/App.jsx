@@ -279,7 +279,7 @@ function Hero() {
 // --- FLOATING SOCIALS ---
 function FloatingSocials() {
     const socialLinks = [
-        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ambuj-shukla-23806915a/', icon: <LinkedInIcon /> },
+        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ambuj-s-23806915a/', icon: <LinkedInIcon /> },
         { name: 'GitHub', url: 'https://github.com/ambuj4373', icon: <GitHubIcon /> },
         { name: 'Medium', url: 'https://medium.com/@ambuj4373', icon: <MediumIcon /> },
         { name: 'Email', url: 'mailto:asjshuklaji@gmail.com', icon: <EmailIcon /> }
